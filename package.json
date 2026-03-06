@@ -1,0 +1,40 @@
+{
+  "name": "storage-portal-desktop",
+  "version": "1.0.0",
+  "description": "Desktop client for cloud storage and download management",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/storage-portal-service/Storage-Portal.git"
+  },
+  "keywords": [
+    "storage",
+    "download",
+    "desktop",
+    "electron"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^40.8.0",
+    "electron-builder": "^26.8.1"
+  },
+  "build": {
+    "appId": "com.storageportal.desktop",
+    "productName": "Storage Portal Desktop",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "index.html",
+      "downloaders.html",
+      "preload.js"
+    ]
+  }
+}

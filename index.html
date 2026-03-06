@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; frame-src https://www.storage-portal.com; script-src 'self'; style-src 'self' 'unsafe-inline';">
+  <title>Storage Portal Desktop</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+    .layout { display: flex; height: 100vh; }
+    .sidebar {
+      width: 56px;
+      background: #1a1a2e;
+      color: #eee;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 12px;
+      gap: 8px;
+    }
+    .sidebar a,
+    .sidebar button {
+      width: 44px;
+      height: 44px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: #aaa;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      text-decoration: none;
+    }
+    .sidebar a:hover,
+    .sidebar button:hover { background: #252540; color: #fff; }
+    .sidebar a.active,
+    .sidebar button.active { background: #3d3d5c; color: #fff; }
+    .content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .content webview { flex: 1; width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <nav class="sidebar">
+      <button type="button" id="btn-portal" class="active" title="Storage Portal">📦</button>
+      <a href="downloaders.html" title="Recommended downloaders">⬇️</a>
+    </nav>
+    <main class="content">
+      <webview id="webview-portal" src="https://www.storage-portal.com" allowpopups></webview>
+    </main>
+  </div>
+  <script>
+    (function () {
+      var webview = document.getElementById('webview-portal');
+      var portalOrigin = 'https://www.storage-portal.com';
+
+      // Same origin (portal): e.g. login popup, stay in app. Don't restrict popups.
+      function isPortalUrl(url) {
+        return url && url.startsWith(portalOrigin);
+      }
+
+      // New window: only "new tab" to external site -> default browser. Same-origin (e.g. login popup) -> leave as-is in app.
+      webview.addEventListener('new-window', function (e) {
+        var url = e.url;
+        if (isPortalUrl(url)) return; // popup from portal, don't restrict
+        e.preventDefault();
+        if (url && window.electronAPI && window.electronAPI.openExternal) {
+          window.electronAPI.openExternal(url);
+        }
+      });
+
+      // Same-tab link to external URL -> open in default browser and keep webview on portal
+      webview.addEventListener('will-navigate', function (e) {
+        var url = e.url;
+        if (!url || !url.startsWith('http')) return;
+        if (url.startsWith(portalOrigin)) return;
+        if (window.electronAPI && window.electronAPI.openExternal) {
+          window.electronAPI.openExternal(url);
+        }
+        setTimeout(function () { webview.src = portalOrigin; }, 0);
+      });
+    })();
+  </script>
+</body>
+</html>
