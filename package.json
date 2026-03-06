@@ -28,8 +28,10 @@
   "build": {
     "appId": "com.storageportal.desktop",
     "productName": "Storage Portal Desktop",
+    "icon": "build/icon.png",
     "directories": {
-      "output": "dist"
+      "output": "dist",
+      "buildResources": "build"
     },
     "linux": {
       "target": ["AppImage"]

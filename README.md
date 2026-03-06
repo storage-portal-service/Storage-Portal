@@ -1,6 +1,6 @@
 # Storage Portal Desktop
 
-Desktop client that opens the Storage Portal web app in a dedicated window and adds a built-in “Recommended downloaders” page. Use the Dashboard inside the app to paste file-host links and get direct download URLs, then grab them with JDownloader, FDM, IDM, or 迅雷. Below: supported link format per host and how to use it in the client.
+Desktop client that opens the [Storage Portal](https://www.storage-portal.com) web app in a dedicated window and adds a built-in “Recommended downloaders” page. Use the Dashboard inside the app to paste file-host links and get direct download URLs, then grab them with JDownloader, FDM, IDM, or 迅雷. Below: supported link format per host and how to use it in the client.
 
 ---
 
@@ -126,6 +126,12 @@ npm run dist
 ```
 
 Output is in the `dist` folder.
+
+## macOS: “无法验证开发者” / “Apple 无法验证……”
+
+The app is not notarized by Apple, so Gatekeeper may show: *Apple 无法验证「Storage Portal Desktop」是否包含可能危害 Mac 安全或泄漏隐私的恶意软件。*
+
+**How to open:** Right-click (or Control-click) the app → **Open** → in the dialog click **Open** again. You only need to do this once; afterward it will open normally. Alternatively: **System Settings → Privacy & Security** → under “Security” you may see the blocked app and an **Open Anyway** button.
 
 ## Releasing on GitHub
 
