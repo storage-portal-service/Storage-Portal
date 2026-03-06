@@ -6,7 +6,8 @@
   "scripts": {
     "start": "electron .",
     "pack": "electron-builder --dir",
-    "dist": "electron-builder"
+    "dist": "electron-builder",
+    "dist:ci": "electron-builder --publish never"
   },
   "repository": {
     "type": "git",
@@ -29,6 +30,9 @@
     "productName": "Storage Portal Desktop",
     "directories": {
       "output": "dist"
+    },
+    "linux": {
+      "target": ["AppImage"]
     },
     "files": [
       "main.js",

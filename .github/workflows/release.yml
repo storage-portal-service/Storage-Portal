@@ -30,22 +30,24 @@ jobs:
 
       - name: Build (macOS)
         if: matrix.runner == 'macos-latest'
-        run: npm run dist
+        run: npm run dist:ci
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CSC_IDENTITY_AUTO_DISCOVERY: 'false'   # 无签名时跳过签名
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
       - name: Build (Windows)
         if: matrix.runner == 'windows-latest'
-        run: npm run dist
+        run: npm run dist:ci
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
       - name: Build (Linux)
         if: matrix.runner == 'ubuntu-latest'
-        run: npm run dist
+        run: npm run dist:ci
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
@@ -56,6 +58,8 @@ jobs:
   create-release:
     needs: release
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
@@ -65,12 +69,17 @@ jobs:
       - name: Collect release assets
         run: |
           mkdir -p release-assets
-          find artifacts -type f \( -name '*.dmg' -o -name '*.zip' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' \) -exec cp {} release-assets/ \;
+          find artifacts -type f \( -name '*.dmg' -o -name '*.zip' -o -name '*.exe' -o -name '*.AppImage' -o -name '*.deb' -o -name '*.rpm' \) -exec cp '{}' release-assets/ \;
           ls -la release-assets/
+          if [ -z "$(ls -A release-assets 2>/dev/null)" ]; then
+            echo "::error::No release assets found. Check build output in dist/ on each runner."
+            exit 1
+          fi
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ github.ref_name }}
           files: release-assets/*
           generate_release_notes: true
           draft: false
